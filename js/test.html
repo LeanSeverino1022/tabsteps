@@ -1,0 +1,116 @@
+<!-- next:
+    handling events, creating event handler- onComplete - reset()
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>todos</title>
+    
+<!-- begin standard css -->
+	<!-- <link rel="stylesheet" href="../../../shared_standard_files/css/global-font.css">
+	<link rel="stylesheet" href="../../../shared_standard_files/css/bootstrap3/bootstrap.css">
+	<link rel="stylesheet" href="../../../shared_standard_files/css/b3-helpers.css">
+	<link rel="stylesheet" href="../../../shared_standard_files/css/b3-global.css">
+    <link rel="stylesheet" href="../../../shared_standard_files/css/sweetalert2.css"> -->
+
+    <!-- <link rel="stylesheet" href="https://app.resultmaps.com/stylesheets/b3single_packaged.css?1553575366"> -->
+    
+    <!-- font awesome 5 -->
+    <!-- <link rel="stylesheet" href="../../../shared_standard_files/css/fontawesome-all.css" /> -->
+
+    <link rel="stylesheet" href="css/test.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+
+
+    <!-- just some space -->
+    <hr style="margin-top: 30px">
+
+    <main class="container-fluid">
+
+        <div class='tab-step'>
+            <h1>INDEX 0</h1>
+        </div>
+        <div class='tab-step'>
+            <h1>INDEX 1</h1>
+        </div>
+        <div class='tab-step'>
+            <h1>INDEX 2</h1>
+        </div>
+        <div class='tab-step'>
+            <h1>INDEX 3</h1>
+        </div>
+        <div class='tab-step'>
+            <h1>INDEX 4</h1>
+        </div>
+        
+        <button onclick="javascript:wizard.prevStep()">previous</button>
+        <button onclick="javascript:wizard.nextStep()">next</button>
+        <button onclick="javascript:wizard.startover()">reset</button>
+        <button onclick="javascript:wizard.displayLogger()">update logger</button>
+
+
+        <div class='tab-index'>
+            <h1>INDEX 0</h1>
+        </div>
+        <div class='tab-index'>
+            <h1>INDEX 1</h1>
+        </div>
+        <div class='tab-index'>
+            <h1>INDEX 2</h1>
+        </div>
+
+        <button onclick="javascript:wizard2.prevStep()">previous</button>
+        <button onclick="javascript:wizard2.nextStep()">next</button>
+        <button onclick="javascript:wizard2.startover()">reset</button>
+        <button onclick="javascript:wizard2.displayLogger()">update logger</button>
+
+        <div class="logger"></div>
+    </main> <!-- end MAIN -->
+
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>  
+    <!-- <script src="../../../shared_standard_files/js/knockout-3.3.0.js"></script> -->
+
+    <script src="tabsteps.js"></script>
+    <script>
+        $(document).ready(function () {
+            window.wizard = new TabSteps({
+                onAllStepsComplete: function () {
+                    this.prevStep();
+                }
+            });
+
+            window.wizard2 = new TabSteps({
+                onAllStepsComplete: function () {
+                   
+                },
+                $stepContainerSelector: $('.tab-index')
+            });
+        });
+    </script>
+</body>
+
+</html>
+
+<!-- the goal
+1. next tab
+2. next tab with callback
+
+
+
+tbd: maybe allow user to add their own tab steps container class? default is .tab-step
+
+
+-->

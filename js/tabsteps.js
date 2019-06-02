@@ -1,70 +1,144 @@
+/**
+ * tabsteps
+ *
+ * @author leandro Severino
+ * @version 1
+ * @url 
+ *
+ * MIT License
+ */
 
-var tabSteps = (function( global, $){
 
-    $tabContentContainer = $('.tab-step');  
-    numOfTabs = $tabContentContainer.length;
-    currentTabIndex = null;
-    fisrtTabIndex = 0;
-    lastTabIndex = $tabContentContainer.length - 1;    
+(function( global, $){   
 
-    function init(){
-        //set current tab Index to 0
-        currentTabIndex = fisrtTabIndex;
-        //hide all tabs except the current tab
-        updateVisibleTabs(fisrtTabIndex);
-    }
-    
-    function nextStep() {
-        //if last step completed do nothing... let user handle what to do
-        if (isLastStepComplete()) {
-            $(window).trigger( "lastStepCompleted" );
-            return;
+    TabSteps = function (userOptions) {
+
+        'use strict';
+
+        //configurable settings
+        var config = {};
+        
+        // unconfigurable private members 
+        var numOfTabs = 0
+        var firstIndex = 0;
+        var currentTabIndex = 0;
+        var lastIndex = 0;
+        
+        /** 
+         * Merge default options with user options
+         *
+         * @param {Object} userOptions - Optional user options
+         * @returns {Object} - Custom options
+         */
+        var mergeOptions = function mergeOptions(userOptions) {
+            // Default options
+            var options = {
+                $stepContainerSelector: $('.tab-step'),
+                onAllStepsComplete: null,
+
+            }
+
+            if (userOptions) {
+                Object.keys(userOptions).forEach(function (key) {
+                    options[key] = userOptions[key]
+                })
+            }
+
+            return options;
         }
 
-        currentTabIndex +=1;
-        updateVisibleTabs(currentTabIndex);
+        /**
+         * Init
+         *
+        */
+        var init = function(userOptions) {
+             // Merge user options into defaults
+            config = mergeOptions(userOptions);   
+
+            if (!config.$stepContainerSelector.length) {
+                throw new Error('Can\'t find the selector ' + config.selector + '.')
+            }
+
+            numOfTabs =  config.$stepContainerSelector.length;
+            lastIndex = config.$stepContainerSelector.length - 1;
+
+            updateVisibleStep(firstIndex);
+           
+        };
+
+        var nextStep = function () {
+            //if current index is last index
+            if (lastIndex === currentTabIndex) {
+                
+                // we have completed the steps
+                if (config.onAllStepsComplete && typeof config.onAllStepsComplete === "function") {
+                    config.onAllStepsComplete.call(this);
+                }                
+                return;
+            }
+
+            //if we haven't reached the end
+            currentTabIndex += 1;
+            updateVisibleStep(currentTabIndex);
+        }
+
+        var prevStep = function () {
+
+            currentTabIndex -= 1;
+            updateVisibleStep(currentTabIndex);
+            alert('prev');
+        }
+
+      
+
+        //if user is on the first step
+        var isOnFirstStep = function () {
+            return lastIndex === currentTabIndex;
+        }
+
+        var startover = function () {
+            currentTabIndex = 0;
+            updateVisibleStep(firstIndex);
+        }
+
+        // function onComplete( cb ) {
+        //     cb()
+        // }
+
+        var updateVisibleStep = function (currentTabIndex) {
+            config.$stepContainerSelector.hide();
+            config.$stepContainerSelector.eq(currentTabIndex).show();
+        }
+
+        /* debugging */
+        var displayLogger = function(){
+
+            $('.logger').html(
+                `<p>
+                    numOfTabs : ${numOfTabs} <br>
+                    currentTabIndex : ${currentTabIndex}<br>
+                    lastIndex : ${lastIndex}<br>
+                </p>`
+            );
+        };
+        
+        init(userOptions);
+
+        return {
+            init,
+            nextStep,
+            prevStep,
+            startover,
+            displayLogger
+        }
     }
 
-    function prevStep() {
+    global.TabSteps = TabSteps;
 
-    }
+})(window, jQuery);
 
-    // all steps completed
-    function isLastStepComplete(){
-        return lastTabIndex === currentTabIndex;
-    }
-
-    //if user is on the first step
-    function isOnFirstStep(){
-        return lastTabIndex === currentTabIndex;
-    }
-
-    function reset(){
-        currentTabIndex = 0;
-        updateVisibleTabs(fisrtTabIndex);
-    }
-
-    // function onComplete( cb ) {
-    //     cb()
-    // }
-
-    function updateVisibleTabs(currentTabIndex){
-        $tabContentContainer.hide();
-        $tabContentContainer.filter(`:nth-child(${currentTabIndex + 1})`).show();
-    }
-
-    return {
-        init,
-        nextStep,
-        prevStep,
-        reset
-    }
-
-})(window, jQuery)
-
-tabSteps.init();
+// tabSteps.init({
+//     onLastStepCompleted
+// });
 
 
-$(window).on('lastStepCompleted', function () {
-    alert('last step completed')
-});
