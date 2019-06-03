@@ -88,6 +88,7 @@
         $(document).ready(function () {
             window.wizard = new TabSteps({
                 onAllStepsComplete: function () {
+                    alert('all steps complete!');
                     this.prevStep();
                 }
             });

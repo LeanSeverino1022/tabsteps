@@ -66,30 +66,31 @@
            
         };
 
-        var nextStep = function () {
+        var nextStep = function (callback) {
             //if current index is last index
             if (lastIndex === currentTabIndex) {
                 
                 // we have completed the steps
-                if (config.onAllStepsComplete && typeof config.onAllStepsComplete === "function") {
-                    config.onAllStepsComplete.call(this);
-                }                
+                runCallback.call(this,config.onAllStepsComplete); 
+              
                 return;
             }
 
             //if we haven't reached the end
             currentTabIndex += 1;
-            updateVisibleStep(currentTabIndex);
+            updateVisibleStep(currentTabIndex);            
         }
 
         var prevStep = function () {
 
+            if (currentTabIndex - 1 < 0) {
+                return;
+            }    
+
             currentTabIndex -= 1;
             updateVisibleStep(currentTabIndex);
-            alert('prev');
         }
-
-      
+     
 
         //if user is on the first step
         var isOnFirstStep = function () {
@@ -121,6 +122,21 @@
                 </p>`
             );
         };
+
+        var getCurrentIndex = function(){
+            return currentTabIndex;
+        };
+
+        /**
+   * Callback event calls
+   * 
+   * @param {function} func - callback function
+   */
+        var runCallback = function (cb) {
+            if (cb && typeof cb === "function") {
+                cb.call(this)
+            }           
+        };
         
         init(userOptions);
 
@@ -129,7 +145,8 @@
             nextStep,
             prevStep,
             startover,
-            displayLogger
+            displayLogger,
+            getCurrentIndex
         }
     }
 
